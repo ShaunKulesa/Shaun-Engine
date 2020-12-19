@@ -48,7 +48,12 @@ class main():
 
     def run_app(self):
         print("run")
-        self.runv = False
+        if self.app.animate == 0:
+            self.app.animate = 10
+            self.app.tkExpose(None) # or self.app._display()
+        else:
+            self.app.animate = 0
+            self.app.tkExpose(None)  
 
     def open_file(self):
         """Open a file for editing."""
@@ -100,20 +105,11 @@ class main():
         rightb = Button(frame1, text="run", command=self.run_app)
         rightb.pack()
 
-        while self.runv == True:
-            print("true")
-            self.app.animate = 1
-            self.app.after(100, self.app.printContext)
-            self.app.mainloop()
 
-        print("false")
-        self.app.animate = 0
-        self.app.after(100, self.app.printContext)
-        self.app.mainloop()
         
 if __name__ == '__main__':
     root = tkinter.Tk()
-    main = main(root)
-
+    app = main(root)
+    root.mainloop()
 
     # app.pack(fill=tkinter.BOTH, expand=tkinter.YES)
