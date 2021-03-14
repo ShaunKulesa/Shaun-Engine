@@ -1,79 +1,42 @@
-from opengl_code import *
-
-import time
 from tkinter import *
-from OpenGL import GL
 from pyopengltk import OpenGLFrame
-import sys
 from OpenGL import GL, GLU
 import tkinter.ttk as ttk
+from viewport import *
 
+# The Tk class parameter makes the class the window widget "root = Tk()"
+class window_and_gui(Tk):
+    def __init__(self):
+        Tk.__init__(self)
+        self._frame = None
+        self.init()
 
-if __name__ == '__main__':
-    root = Tk()
-    print(root.winfo_height)
-    print(root.winfo_width)
+    # Calls all functions
+    def init(self):
+        self.left_pannel_create()
+        self.viewport_pannel_create()
+        self.viewport_create()
+        self.transformation_section()
+
+    # The GUI on the left
+    def left_pannel_create(self):
+        self.m1 = PanedWindow(self, relief=RAISED, sashrelief=RAISED)
+        self.m1.pack(fill=BOTH, expand=1)
     
+    # Right pannel for the viewport to be stored in
+    def viewport_pannel_create(self):
+        self.m2 = PanedWindow(self.m1, width=300, height=1080)
+        self.m1.add(self.m2)
     
+    # Opengl viewport from the class "Viewport" in "viewport.py"
+    def viewport_create(self):
+        viewport = Viewport(self.m1, width=1500, height=1080)
+        self.m1.add(viewport)
+        viewport.animate = 1
+        viewport.after(100, viewport.printContext)
+        viewport.bind("<B1-Motion>", viewport.drag_handler)
 
-
-
-
-
-    m1 = PanedWindow(relief=RAISED, sashrelief=RAISED)
-    m1.pack(fill=BOTH, expand=1)
-
-    m2 = PanedWindow(m1, orient=HORIZONTAL)
-    m1.add(m2)
-
-    frame1 = Frame(m1, bg="#3a3b3d")
-    frame2 = Frame(m1, bg="#3a3b3d")
-
-
-    m2.add(frame2, width=400)
-
-    app = AppOgl(m1, width=1500, height=1080)
-    m1.add(app)
-
-    note = ttk.Notebook(frame2)
-
-    tab1 = Frame(note)
-    tab2 = Frame(note)
-    tab3 = Frame(note)
-    Button(tab1, text='Exit', command=root.destroy).pack()
-
-    note.add(tab1, text = "Transformations", compound=TOP)
-    note.add(tab2, text = "Texturing")
-    note.add(tab3, text = "Code")
-    note.pack(fill=X)
-
-  
-
-
-    
-
-    m1.add(frame1, width=400)
-
-
-
-    
-
-    
-    
-
-
-
-
-    
-    
-    # pan = PanedWindow(root)
-    # pan.pack(side=LEFT, fill=BOTH, expand=1)
-
-    # Label(pan, text="size").pack()
-
-    # app.pack(fill=BOTH, expand=YES, side=LEFT)
-    app.animate = 1
-    app.after(100, app.printContext)
-    app.bind("<B1-Motion>", app.drag_handler)
-    
-    root.mainloop()
+    # Transformation notebook tab and contents
+    def transformation_section(self):
+        transformation_frame = Frame(self.m2, height=1080, bg = "#3a3b3d")
+        self.m2.add(transformation_frame)
